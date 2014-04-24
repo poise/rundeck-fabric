@@ -123,25 +123,6 @@ callables = load_fabfile(find_fabfile())[1]
 print(json.dumps(visit(callables)))
 EOPY
 
-    # # Enumerate all tasks
-    # def parse_fabric_tasks
-    #   fab = ::File.join(new_resource.fabric_virtualenv_path, 'bin', 'fab')
-    #   cmd = shell_out([fab, '-l', '-F', 'short'])
-    #   raise "Unable to list fabric tasks: #{cmd.stdout}" if cmd.error?
-    #   tasks = cmd.stdout.split
-    #   Chef::Log.debug("Found Fabric tasks: #{tasks.join(', ')}")
-    #   tasks.inject({}) do |memo, task|
-    #     cmd = shell_out!([fab, '-d', task])
-    #     lines = cmd.stdout.split("\n")
-    #     # Remove the first two and last line
-    #     lines = lines[2..-2]
-    #     # Remove four leading spaces on each line
-    #     lines = lines.map {|line| line[4..-1] }
-    #     memo[task] = lines.join("\n")
-    #     memo
-    #   end
-    # end
-
     def parse_fabric_tasks
       python = ::File.join(new_resource.fabric_virtualenv_path, 'bin', 'python')
       cmd = shell_out!([python], input: FABRIC_PARSER_SCRIPT, cwd: new_resource.fabric_path, user: 'root', group: 'root')
