@@ -38,6 +38,7 @@ class Chef
     private
 
     def write_project_config
+      create_node_source
       r = super
       # Run these first since we need it installed to parse jobs
       notifying_block do
@@ -103,11 +104,17 @@ def visit_task(task, path):
     if task.func_code.co_name == 'inner_decorator':
         closure = dict(zip(task.func_code.co_freevars, (c.cell_contents for c in task.func_closure)))
         task = closure.get('func', closure.get('fn', task))
+    args = inspect.getargspec(task)
     return {
         'name': task.func_name,
         'path': path,
         'doc': task.__doc__,
-        'args': inspect.getargspec(task),
+        'argspec': {
+          'args': args.args,
+          'varargs': args.varargs,
+          'keywords': args.keywords,
+          'defaults': args.defaults,
+        },
     }
 
 def visit(c, path=[]):
@@ -140,6 +147,7 @@ EOPY
     end
 
     def task_to_yaml(task)
+      argspec = task['argspec']
       data = {}
       data['loglevel'] = 'INFO'
       data['description'] = task['doc']
@@ -148,10 +156,36 @@ EOPY
       data['sequence']['keepgoing'] = false
       data['sequence']['strategy'] = 'node-first'
       data['sequence']['commands'] = []
-      data['sequence']['commands'] << {
-        'exec' => "cd #{new_resource.fabric_path} && fab #{(task['path'] + [task['name']]).join('.')}",
-      }
+      data['sequence']['commands'] << {}
+      cmd = "cd #{new_resource.fabric_path} && "
+      cmd << "#{::File.join(new_resource.fabric_virtualenv_path, 'bin', 'fab')} #{(task['path'] + [task['name']]).join('.')}"
+      unless argspec['args'].empty?
+        cmd << ":#{argspec['args'].map{|arg| "#{arg}=${option.#{arg}}"}.join(',')}"
+      end
+      data['sequence']['commands'][0]['exec'] = cmd
+      data['options'] = {}
+      # The defaults array starts from the end of the args list
+      arg_defaults = if argspec['defaults']
+        Hash[argspec['args'][-1*argspec['defaults'].length..-1].zip(argspec['defaults'])]
+      else
+        {}
+      end
+      argspec['args'].each do |arg|
+        data['options'][arg] = {}
+        if arg_defaults.include?(arg)
+          # It has a default value
+          data['options'][arg]['value'] = arg_defaults[arg].to_s
+        else
+          data['options'][arg]['required'] = true
+        end
+      end
       [data].to_yaml
+    end
+
+    def create_node_source
+      rundeck_fabric_node_source new_resource.name do
+        parent new_resource
+      end
     end
 
   end

@@ -1,21 +1,21 @@
-from fabric.api import task, run
+from fabric.api import task, local
 from fabric.decorators import roles
 
-@roles('live')
+@roles('www')
 @task
 def one():
     """Task one."""
-    run('date')
+    local('echo one')
 
 
 @task
 def two(arg1):
     """Task
     two."""
-    run('date')
+    local('echo two %s'%(arg1,))
 
 @task
-@roles('live')
+@roles('www')
 def three(c, d=1):
     """Take three."""
-    run('date')
+    local('echo three %s %s'%(c, d))
