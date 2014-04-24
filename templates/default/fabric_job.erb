@@ -1,0 +1,13 @@
+- loglevel: INFO
+  description: <%= @doc %>
+  <%- unless @path.empty? -%>
+  group: <%= @path.join('/') %>
+  <%- end -%>
+  sequence:
+    keepgoing: false
+    strategy: node-first
+    commands:
+    - type: localexec
+      nodeStep: true
+      configuration:
+        command: cd <%= @fabric_path %> && fab <%= (@path + [@name]).join('.') %>

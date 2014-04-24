@@ -1,0 +1,35 @@
+DEPENDENCIES
+  apt
+  rundeck
+    path: ../rundeck
+  rundeck-fabric
+    path: .
+    metadata: true
+  rundeck-fabric_test
+    path: test/cookbooks/rundeck-fabric_test
+
+GRAPH
+  apt (2.3.8)
+  build-essential (2.0.0)
+  java (1.22.0)
+  poise (1.0.10)
+  python (1.4.6)
+    build-essential (>= 0.0.0)
+    yum-epel (>= 0.0.0)
+  rundeck (1.0.0)
+    apt (>= 0.0.0)
+    java (>= 0.0.0)
+    poise (>= 0.0.0)
+    runit (>= 0.0.0)
+  rundeck-fabric (1.0.0)
+    python (>= 0.0.0)
+    rundeck (>= 0.0.0)
+  rundeck-fabric_test (0.0.0)
+    rundeck-fabric (>= 0.0.0)
+  runit (1.5.10)
+    build-essential (>= 0.0.0)
+    yum (~> 3.0)
+    yum-epel (>= 0.0.0)
+  yum (3.2.0)
+  yum-epel (0.3.6)
+    yum (~> 3.0)
