@@ -51,6 +51,11 @@ describe file('/tmp/three') do
   its(:content) { should include("options:\n    c:\n      required: true\n    d:\n      value: '1'") }
 end
 
+describe file('/var/lib/rundeck/projects/fabric/etc/project.properties') do
+  it { should be_a_file }
+  its(:content) { should include('config.file=/var/lib/rundeck/projects/fabric/etc/resources.xml') }
+end
+
 describe file('/var/lib/rundeck/projects/fabric/etc/resources.xml') do
   it { should be_a_file }
   its(:content) { should include('name="localhost"') }
