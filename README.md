@@ -5,7 +5,7 @@ rundeck-fabric
 
 This cookbook creates a Rundeck project from a Fabric fabfile stored in git.
 This allows you to use the same code for both local tasks and service-based
-operations.
+operations. This depends on the [Balanced version of the rundeck cookbook](https://github.com/balanced-cookbooks/rundeck).
 
 Quick Start
 -----------
