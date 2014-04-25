@@ -16,11 +16,9 @@
 # limitations under the License.
 #
 
-source 'https://api.berkshelf.com/'
+source 'https://berks.vandelay.io/'
 
 metadata
-
-cookbook 'rundeck', path: '../rundeck'
 
 group :test do
   cookbook 'apt'

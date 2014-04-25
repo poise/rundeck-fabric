@@ -26,4 +26,4 @@ description 'Integration between Rundeck and Fabric'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 
 depends 'python'
-depends 'rundeck'
+depends 'rundeck', '~> 99.1.0'

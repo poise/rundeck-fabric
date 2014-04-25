@@ -1,7 +1,5 @@
 DEPENDENCIES
   apt
-  rundeck
-    path: ../rundeck
   rundeck-fabric
     path: .
     metadata: true
@@ -16,14 +14,14 @@ GRAPH
   python (1.4.6)
     build-essential (>= 0.0.0)
     yum-epel (>= 0.0.0)
-  rundeck (1.0.0)
+  rundeck (99.1.0)
     apt (>= 0.0.0)
     java (>= 0.0.0)
     poise (>= 0.0.0)
     runit (>= 0.0.0)
   rundeck-fabric (1.0.0)
     python (>= 0.0.0)
-    rundeck (>= 0.0.0)
+    rundeck (~> 99.1.0)
   rundeck-fabric_test (0.0.0)
     rundeck-fabric (>= 0.0.0)
   runit (1.5.10)
