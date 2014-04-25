@@ -18,9 +18,9 @@
 
 class Chef
   class Resource::RundeckFabricProject < Resource::RundeckProject
-    attribute(:fabric_respository, kind_of: String, default: lazy { node['rundeck-fabric']['fabric_respository'] }, required: true)
-    attribute(:fabric_revision, kind_of: String, default: lazy { node['rundeck-fabric']['fabric_revision'] })
-    attribute(:fabric_version, kind_of: String, default: lazy { node['rundeck-fabric']['fabric_version'] })
+    attribute(:fabric_repository, kind_of: String, default: lazy { node['rundeck-fabric']['repository'] }, required: true)
+    attribute(:fabric_revision, kind_of: String, default: lazy { node['rundeck-fabric']['revision'] })
+    attribute(:fabric_version, kind_of: String, default: lazy { node['rundeck-fabric']['version'] })
     attribute(:fabric_remote_directory, kind_of: String) # For debugging, use remote_directory instead of git, set to the name of the cookbook
 
     def fabric_path
@@ -77,7 +77,7 @@ class Chef
         remote_directory new_resource.fabric_path do
           user 'root'
           group 'root'
-          source new_resource.fabric_respository
+          source new_resource.fabric_repository
           cookbook new_resource.fabric_remote_directory
           purge true
         end
@@ -85,7 +85,7 @@ class Chef
         git new_resource.fabric_path do
           user 'root'
           group 'root'
-          repository new_resource.fabric_respository
+          repository new_resource.fabric_repository
           revision new_resource.fabric_revision
         end
       end

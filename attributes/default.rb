@@ -16,6 +16,6 @@
 # limitations under the License.
 #
 
-default['rundeck-fabric']['fabric_respository'] = nil
-default['rundeck-fabric']['fabric_revision'] = 'master'
-default['rundeck-fabric']['fabric_version'] = nil # Default to latest
+default['rundeck-fabric']['repository'] = nil
+default['rundeck-fabric']['revision'] = 'master'
+default['rundeck-fabric']['version'] = nil # Default to latest
