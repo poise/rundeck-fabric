@@ -35,19 +35,23 @@ class Chef
   class Provider::RundeckFabricProject < Provider::RundeckProject
     include Chef::Mixin::ShellOut
 
+    def action_enable
+      super
+      notifying_block do
+        include_recipe 'git'
+        clone_fabric_repository
+      end
+      create_fabric_jobs
+    end
+
     private
 
     def write_project_config
       create_node_source
       r = super
-      # Run these first since we need it installed to parse jobs
-      notifying_block do
-        install_python
-        create_virtualenv
-        install_fabric
-      end
-      clone_fabric_repository
-      create_fabric_jobs
+      install_python
+      create_virtualenv
+      install_fabric
       r
     end
 
@@ -88,6 +92,7 @@ class Chef
           group 'root'
           repository new_resource.fabric_repository
           revision new_resource.fabric_revision
+          action :sync
         end
       end
     end
