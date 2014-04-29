@@ -82,6 +82,7 @@ class Chef
           purge true
         end
       else
+        include_recipe 'git'
         git new_resource.fabric_path do
           user 'root'
           group 'root'
