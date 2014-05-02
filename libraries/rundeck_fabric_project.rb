@@ -76,6 +76,21 @@ class Chef
       end
     end
 
+    def create_ssh_directory
+      directory '/root/.ssh' do
+        action :create
+      end
+    end
+
+    def write_ssh_config
+      template '/root/.ssh/config' do
+        source 'ssh_config.erb'
+        owner 'root'
+        group 'root'
+        mode '400'
+      end
+    end
+
     def clone_fabric_repository
       if new_resource.fabric_remote_directory
         remote_directory new_resource.fabric_path do
@@ -87,6 +102,8 @@ class Chef
         end
       else
         include_recipe 'git'
+        create_ssh_directory
+        write_ssh_config
         git new_resource.fabric_path do
           user 'root'
           group 'root'
