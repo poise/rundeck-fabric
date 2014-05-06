@@ -36,6 +36,17 @@ class Chef
   class Provider::RundeckFabricProject < Provider::RundeckProject
     include Chef::Mixin::ShellOut
 
+    def action_enable
+      super
+      notifying_block do
+        create_virtualenv
+        install_fabric
+        install_crontab
+        clone_fabric_repository
+      end
+      create_fabric_jobs
+    end
+
     private
 
     def write_project_config
@@ -44,12 +55,7 @@ class Chef
       # Run these first since we need it installed to parse jobs
       notifying_block do
         install_python
-        create_virtualenv
-        install_fabric
-        install_crontab
       end
-      clone_fabric_repository
-      create_fabric_jobs
       r
     end
 
@@ -111,6 +117,10 @@ from crontab import CronTab
 from fabric.main import find_fabfile, load_fabfile
 
 def explode_cron(schedule_string):
+
+    if not schedule_string:
+        return {}
+
     schedule = {
         'time': {
             'seconds': '0',
@@ -126,8 +136,6 @@ def explode_cron(schedule_string):
         },
         'year': '*'
     }
-    if not schedule_string:
-        return schedule
 
     cron = CronTab(schedule_string)
     if not cron.matchers.minute.any:
