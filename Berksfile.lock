@@ -9,7 +9,7 @@ DEPENDENCIES
 GRAPH
   apt (2.3.8)
   build-essential (2.0.0)
-  java (1.22.0)
+  java (1.21.2)
   poise (1.0.10)
   python (1.4.6)
     build-essential (>= 0.0.0)
@@ -28,6 +28,6 @@ GRAPH
     build-essential (>= 0.0.0)
     yum (~> 3.0)
     yum-epel (>= 0.0.0)
-  yum (3.2.0)
-  yum-epel (0.3.6)
+  yum (3.1.4)
+  yum-epel (0.3.4)
     yum (~> 3.0)

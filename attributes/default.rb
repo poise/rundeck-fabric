@@ -19,3 +19,4 @@
 default['rundeck-fabric']['repository'] = nil
 default['rundeck-fabric']['revision'] = 'master'
 default['rundeck-fabric']['version'] = nil # Default to latest
+default['rundeck-fabric']['crontab_version'] = nil # Default to latest

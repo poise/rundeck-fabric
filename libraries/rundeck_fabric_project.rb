@@ -21,6 +21,7 @@ class Chef
     attribute(:fabric_repository, kind_of: String, default: lazy { node['rundeck-fabric']['repository'] }, required: true)
     attribute(:fabric_revision, kind_of: String, default: lazy { node['rundeck-fabric']['revision'] })
     attribute(:fabric_version, kind_of: String, default: lazy { node['rundeck-fabric']['version'] })
+    attribute(:crontab_version, kind_of: String, default: lazy { node['rundeck-fabric']['crontab_version'] })
     attribute(:fabric_remote_directory, kind_of: String) # For debugging, use remote_directory instead of git, set to the name of the cookbook
 
     def fabric_path
@@ -45,6 +46,7 @@ class Chef
         install_python
         create_virtualenv
         install_fabric
+        install_crontab
       end
       clone_fabric_repository
       create_fabric_jobs
@@ -63,9 +65,19 @@ class Chef
     end
 
     def install_fabric
-      python_pip 'Fabric' do
+      python_pip 'fabric' do
         action :upgrade unless new_resource.fabric_version
         version new_resource.fabric_version
+        virtualenv new_resource.fabric_virtualenv_path
+        user 'root'
+        group 'root'
+      end
+    end
+
+    def install_crontab
+      python_pip 'crontab' do
+        action :upgrade unless new_resource.crontab_version
+        version new_resource.crontab_version
         virtualenv new_resource.fabric_virtualenv_path
         user 'root'
         group 'root'
@@ -92,9 +104,61 @@ class Chef
     end
 
     FABRIC_PARSER_SCRIPT = <<-EOPY
-from fabric.main import find_fabfile, load_fabfile
 import inspect
 import json
+
+from crontab import CronTab
+from fabric.main import find_fabfile, load_fabfile
+
+def explode_cron(schedule_string):
+    schedule = {
+        'time': {
+            'seconds': '0',
+            'minute': '0',
+            'hour': '0',
+        },
+        'month': '*',
+        'dayofmonth': {
+            'day': '1',
+        },
+        'weekday': {
+            'day': '*'
+        },
+        'year': '*'
+    }
+    if not schedule_string:
+        return schedule
+
+    cron = CronTab(schedule_string)
+    if not cron.matchers.minute.any:
+        schedule['time']['minute'] = cron.matchers.minute.input
+
+    if not cron.matchers.hour.any:
+        schedule['time']['hour'] = cron.matchers.hour.input
+
+    if not cron.matchers.day.any:
+        schedule['dayofmonth']['day'] = cron.matchers.day.input
+
+    if not cron.matchers.month.any:
+        schedule['month'] = cron.matchers.month.input
+
+    if not cron.matchers.weekday.any:
+        schedule['weekday']['day'] = cron.matchers.weekday.input
+
+    if not cron.matchers.year.any:
+        schedule['year'] = cron.matchers.year.input
+
+    #  http://wiki.gentoo.org/wiki/Cron
+    if all([cron.matchers.day.any, cron.matchers.weekday.any]):
+        # if both are specified, it means every day, so remove
+        # dayofmonth (since Rundeck gets confused)
+        del schedule['dayofmonth']
+    elif not cron.matchers.day.any and cron.matchers.weekday.any:
+        del schedule['weekday']
+    elif cron.matchers.day.any and not cron.matchers.weekday.any:
+        del schedule['dayofmonth']
+
+    return schedule
 
 def visit_task(task, path):
     # Unwrap
@@ -109,6 +173,7 @@ def visit_task(task, path):
         'name': task.func_name,
         'path': path,
         'doc': task.__doc__,
+        'schedule': explode_cron(getattr(task, 'schedule', None)),
         'argspec': {
           'args': args.args,
           'varargs': args.varargs,
@@ -149,6 +214,7 @@ EOPY
     def task_to_yaml(task)
       argspec = task['argspec']
       data = {}
+      data['schedule'] = task['schedule']
       data['loglevel'] = 'INFO'
       data['description'] = task['doc']
       data['group'] = task['path'].join('/') unless task['path'].empty?
