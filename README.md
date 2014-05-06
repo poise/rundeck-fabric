@@ -18,7 +18,7 @@ with one job for each task in your fabfile.
 
 Currently, scheduling of tasks requires that the inner most decorated function
 is decorated with string attributed named `schedule` that follows traditional
-CRON expressions.
+[Cron expressions](http://en.wikipedia.org/wiki/Cron#CRON_expression).
 
 Here's [an example decorator](https://github.com/balanced-cookbooks/rundeck-fabric/blob/98dbad86590629f7c297959089faf71c9e092a16/test/cookbooks/rundeck-fabric_test/files/default/simple/fabfile.py#L5-L9)
  to help you get started.
