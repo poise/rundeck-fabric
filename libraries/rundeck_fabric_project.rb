@@ -161,8 +161,18 @@ class Chef
         end
       end
       if task['cron'] && !task['cron'].empty?
-        data['sequence'] = if task['cron'].is_a?(String)
-          {'crontab' => task['cron']}
+        data['schedule'] = if task['cron'].is_a?(String)
+          # Try to keep parsing to minimum
+          crontab = task['cron'].split
+          if crontab.length == 5
+            # Seconds are required for no good reason
+            crontab.insert(0, '0')
+          end
+          if crontab[3] == '*' && crontab[5] == '*'
+            # Quartz doesn't understand how to parse this otherwise
+            crontab[5] = '?'
+          end
+          {'crontab' => crontab.join(' ')}
         else
           task['cron']
         end
