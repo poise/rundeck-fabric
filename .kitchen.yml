@@ -22,4 +22,8 @@ suites:
 - name: git
   run_list:
   - recipe[rundeck]
-  - recipe[rundeck-fabric_test::simple]
+  - recipe[rundeck-fabric_test::git]
+- name: cron
+  run_list:
+  - recipe[rundeck]
+  - recipe[rundeck-fabric_test::cron]
