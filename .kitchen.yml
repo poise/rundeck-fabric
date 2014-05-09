@@ -19,3 +19,7 @@ suites:
   run_list:
   - recipe[rundeck]
   - recipe[rundeck-fabric_test::simple]
+- name: git
+  run_list:
+  - recipe[rundeck]
+  - recipe[rundeck-fabric_test::simple]
