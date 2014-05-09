@@ -16,7 +16,6 @@
 # limitations under the License.
 #
 
-default['rundeck-fabric']['repository'] = nil
-default['rundeck-fabric']['revision'] = 'master'
-default['rundeck-fabric']['version'] = nil # Default to latest
-default['rundeck-fabric']['fabric_rundeck_version'] = nil
+rundeck_fabric_project 'fabric' do
+  fabric_repository 'https://github.com/balanced/fabric-test.git'
+end

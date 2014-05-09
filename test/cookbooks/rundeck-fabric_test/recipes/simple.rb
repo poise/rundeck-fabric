@@ -17,6 +17,6 @@
 #
 
 rundeck_fabric_project 'fabric' do
-  fabric_respository 'simple'
+  fabric_repository 'simple'
   fabric_remote_directory 'rundeck-fabric_test'
 end
