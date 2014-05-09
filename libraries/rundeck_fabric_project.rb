@@ -40,7 +40,6 @@ class Chef
 
     def write_project_config
       create_node_source
-      # Run these first since we need it installed to parse jobs
       r = super
       install_python
       create_virtualenv
