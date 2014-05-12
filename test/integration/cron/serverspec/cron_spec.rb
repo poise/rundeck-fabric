@@ -22,35 +22,23 @@ include Serverspec::Helper::DetectOS
 
 ENV['RDECK_BASE'] = '/var/lib/rundeck'
 
-describe command('rd-jobs -p fabric --name one --file /tmp/one --format yaml') do
+describe command('rd-jobs -p fabric --name one --file /dev/stdout --format yaml') do
   it { should return_exit_status(0) }
+  its(:stdout) { should include('description: Task one.') }
+  its(:stdout) { should include('time:') }
+  its(:stdout) { should include("minute: '0'") }
+  its(:stdout) { should include("hour: '12'") }
 end
 
-describe file('/tmp/one') do
-  it { should be_a_file }
-  its(:content) { should include('description: Task one.') }
-  its(:content) { should include('time:') }
-  its(:content) { should include("minute: '0'") }
-  its(:content) { should include("hour: '12'") }
-end
-
-describe command('rd-jobs -p fabric --name two --file /tmp/two --format yaml') do
+describe command('rd-jobs -p fabric --name two --file /dev/stdout --format yaml') do
   it { should return_exit_status(0) }
+  its(:stdout) { should include("description: |-\n    Task\n        two.") }
+  its(:stdout) { should include('time:') }
+  its(:stdout) { should include("minute: '45'") }
+  its(:stdout) { should include("hour: '0'") }
 end
 
-describe file('/tmp/two') do
-  it { should be_a_file }
-  its(:content) { should include("description: |-\n    Task\n        two.") }
-  its(:content) { should include('time:') }
-  its(:content) { should include("minute: '45'") }
-  its(:content) { should include("hour: '0'") }
-end
-
-describe command('rd-jobs -p fabric --name three --file /tmp/three --format yaml') do
+describe command('rd-jobs -p fabric --name three --file /dev/stdout --format yaml') do
   it { should return_exit_status(0) }
-end
-
-describe file('/tmp/three') do
-  it { should be_a_file }
-  its(:content) { should include('description: Take three.') }
+  its(:stdout) { should include('description: Take three.') }
 end
