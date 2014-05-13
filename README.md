@@ -7,6 +7,9 @@ This cookbook creates a Rundeck project from a Fabric fabfile stored in git.
 This allows you to use the same code for both local tasks and service-based
 operations. This depends on the [Balanced version of the rundeck cookbook](https://github.com/balanced-cookbooks/rundeck).
 
+Scheduled jobs can be created automatically by using the `@cron` decorator and
+other helpers in [fabric-rundeck](https://github.com/coderanger/fabric-rundeck).
+
 Quick Start
 -----------
 
@@ -20,6 +23,7 @@ Attributes
 * `node['rundeck-fabric']['repository']` – Git URI to clone from.
 * `node['rundeck-fabric']['revision']` – Git branch or tag to use. *(default: master)*
 * `node['rundeck-fabric']['version']` – Version of Fabric to install. *(default: latest)*
+* `node['rundeck-fabric']['fabric_rundeck_version']` – Version of fabric-rundeck to install. *(default: latest)*
 
 Resources
 ---------
@@ -39,3 +43,4 @@ end
 * `fabric_repository` – Git URI to clone from. *(default: node['rundeck-fabric']['repository'], required)*
 * `fabric_revision` – Git branch or tag to use. *(default: node['rundeck-fabric']['revision'])*
 * `fabric_version` – Version of Fabric to install. *(default: node['rundeck-fabric']['version'])*
+* `fabric_rundeck_version` – Version of fabric-rundeck to install. *(default: node['rundeck-fabric']['fabric_rundeck_version'])*
