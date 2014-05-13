@@ -27,4 +27,4 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 
 depends 'git'
 depends 'python'
-depends 'rundeck', '~> 99.1.0'
+depends 'rundeck', '~> 99.1.2'
