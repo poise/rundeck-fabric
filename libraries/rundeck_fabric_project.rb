@@ -46,6 +46,7 @@ class Chef
       install_fabric
       install_fabric_rundeck
       clone_fabric_repository
+      install_repository_deps
       delayed_create_fabric_jobs
       r
     end
@@ -98,6 +99,15 @@ class Chef
           repository new_resource.fabric_repository
           revision new_resource.fabric_revision
         end
+      end
+    end
+
+    def install_repository_deps
+      python_pip "-e #{new_resource.fabric_path}"  do
+        action :upgrade
+        virtualenv new_resource.fabric_virtualenv_path
+        user 'root'
+        group 'root'
       end
     end
 
