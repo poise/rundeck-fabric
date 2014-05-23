@@ -104,7 +104,7 @@ class Chef
     end
 
     def install_setup_py
-      execute "#{::File.join(resource.fabric_virtualenv_path, 'bin', 'pip')} install -e ." do
+      execute "#{::File.join(new_resource.fabric_virtualenv_path, 'bin', 'pip')} install -e ." do
         cwd new_resource.fabric_path
         user 'root'
         group 'root'
@@ -113,7 +113,7 @@ class Chef
     end
 
     def install_requirements_txt
-      execute "#{::File.join(resource.fabric_virtualenv_path, 'bin', 'pip')} install -r requirements.txt" do
+      execute "#{::File.join(new_resource.fabric_virtualenv_path, 'bin', 'pip')} install -r requirements.txt" do
         cwd new_resource.fabric_path
         user 'root'
         group 'root'
