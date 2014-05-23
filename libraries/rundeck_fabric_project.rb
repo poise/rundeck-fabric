@@ -46,6 +46,8 @@ class Chef
       install_fabric
       install_fabric_rundeck
       clone_fabric_repository
+      install_setup_py
+      install_requirements_txt
       delayed_create_fabric_jobs
       r
     end
@@ -98,6 +100,24 @@ class Chef
           repository new_resource.fabric_repository
           revision new_resource.fabric_revision
         end
+      end
+    end
+
+    def install_setup_py
+      execute "#{::File.join(new_resource.fabric_virtualenv_path, 'bin', 'pip')} install -e ." do
+        cwd new_resource.fabric_path
+        user 'root'
+        group 'root'
+        only_if { ::File.exists?(::File.join(new_resource.fabric_path, 'setup.py')) }
+      end
+    end
+
+    def install_requirements_txt
+      execute "#{::File.join(new_resource.fabric_virtualenv_path, 'bin', 'pip')} install -r requirements.txt" do
+        cwd new_resource.fabric_path
+        user 'root'
+        group 'root'
+        only_if { ::File.exists?(::File.join(new_resource.fabric_path, 'requirements.txt')) }
       end
     end
 

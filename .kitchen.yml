@@ -27,3 +27,7 @@ suites:
   run_list:
   - recipe[rundeck]
   - recipe[rundeck-fabric_test::cron]
+- name: dependencies
+  run_list:
+  - recipe[rundeck]
+  - recipe[rundeck-fabric_test::dependencies]
